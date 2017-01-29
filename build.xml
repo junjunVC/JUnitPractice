@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+  <project name="sample" default="main" basedir=".">
+
+  <!-- mainターゲット -->
+  <target name="main" depends="clean,init,compile,instrument,test,coverage,createJar,javadoc">
+  </target>
+
+
+  <!-- ディレクトリを設定 -->
+  <property name="source" value="./src"/>
+  <property name="productSource" value="${source}/junit/practice"/>
+  <property name="testSource" value="${source}/junit/practiceTest"/>
+  <property name="compile" value="./class"/>
+  <property name="productCompile" location="${compile}" />
+  <property name="testCompile" location="${compile}" />
+
+  <!-- ライブラリ関連パスの設定 -->
+  <property name="lib.junit.dir" location="./lib/junit" />
+  <property name="lib.cobertura.dir" location="./lib/cobertura" />
+
+  <!-- レポート用パスの設定 -->
+  <property name="report.dir" location="./bin/report" />
+  <property name="report.junit.dir" location="${report.dir}/junit" />
+  <property name="report.cobertura.dir" location="${report.dir}/cobertura" />
+
+  <!-- ソースファイルをコンパイル -->
+  <target name="compile">
+    <mkdir dir="${productCompile}" />
+    <javac
+      encoding="utf-8"
+      srcdir="${productSource}"
+      destdir="${productCompile}"
+      includeAntRuntime="true"
+      debug="true"
+    />
+
+    <!-- テストコードをコンパイル -->
+    <mkdir dir="${testCompile}" />
+    <javac
+      encoding="utf-8"
+      srcdir="${testSource}"
+      destdir="${testCompile}"
+      includeAntRuntime="true">
+      <classpath>
+        <pathelement location="${productCompile}"/>
+        <fileset dir="${lib.junit.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- Coberturaコードをクラスファイルにマージ -->
+  <property name="convert.dir" location="./convert" />
+  <path id="cobertura.lib">
+    <fileset dir="${lib.cobertura.dir}">
+      <include name="cobertura*.jar" />
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+  <taskdef classpathref="cobertura.lib" resource="tasks.properties" />
+  <target name="instrument">
+    <delete file="cobertura.ser" />
+    <mkdir dir="${convert.dir}" />
+    <cobertura-instrument todir="${convert.dir}">
+      <fileset dir="${productCompile}">
+        <include name="**/*.class" />
+      </fileset>
+    </cobertura-instrument>
+  </target>
+
+  <!-- ユニットテストの実行 -->
+  <target name="test">
+    <mkdir dir="${report.junit.dir}" />
+    <junit fork="yes" printsummary="yes" haltonfailure="no">
+      <sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" />
+      <classpath>
+        <pathelement location="${convert.dir}" />
+        <pathelement location="${productCompile}" />
+        <pathelement location="${testCompile}" />
+        <fileset dir="${lib.junit.dir}">
+          <include name="*.jar" />
+        </fileset>
+        <path refid="cobertura.lib" />
+      </classpath>
+      <formatter type="xml" />
+      <batchtest fork="yes" todir="${report.junit.dir}" >
+        <fileset dir="${source}">
+          <include name="**/*Test.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- カバレッジレポートの作成 -->
+  <target name="coverage" description="カバレッジレポートの作成">
+    <mkdir dir="${report.cobertura.dir}" />
+    <cobertura-report format="xml" destdir="${report.cobertura.dir}" >
+      <fileset dir="${source}">
+        <include name="**/*.java" />
+      </fileset>
+    </cobertura-report>
+  </target>
+
+  <!-- Jarファイルを作成する -->
+  <target name="createJar">
+    <jar
+     destfile="./bin/junitPractice.jar"
+     basedir="${productCompile}">
+    </jar>
+  </target>
+
+  <!-- JavaDocを作成する -->
+  <target name="javadoc">
+    <javadoc
+     encoding="utf-8"
+     destdir="./javadoc">
+      <fileset dir="${productSource}" />
+    </javadoc>
+  </target>
+
+  <!-- ビルドデータの削除 -->
+  <target name="clean" description="ビルドデータの削除">
+    <delete dir="${compile}" />
+    <delete dir="${convert.dir}" />
+    <delete dir="${report.dir}" />
+  </target>
+
+  <!-- ビルド環境の初期化 -->
+  <target name="init" description="ビルド環境の初期化">
+    <mkdir dir="${compile}" />
+    <mkdir dir="${convert.dir}" />
+    <mkdir dir="${report.dir}" />
+  </target>
+</project>
