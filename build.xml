@@ -2,7 +2,7 @@
   <project name="sample" default="main" basedir=".">
 
   <!-- mainターゲット -->
-  <target name="main" depends="clean,init,compile,instrument,test,coverage,createJar,javadoc">
+  <target name="main" depends="clean,init,compile,instrument,count,test,coverage,createJar,javadoc">
   </target>
 
 
@@ -17,11 +17,13 @@
   <!-- ライブラリ関連パスの設定 -->
   <property name="lib.junit.dir" location="./lib/junit" />
   <property name="lib.cobertura.dir" location="./lib/cobertura" />
+  <property name="lib.javancss.dir" location="./lib/javancss" />
 
   <!-- レポート用パスの設定 -->
   <property name="report.dir" location="./bin/report" />
   <property name="report.junit.dir" location="${report.dir}/junit" />
   <property name="report.cobertura.dir" location="${report.dir}/cobertura" />
+  <property name="report.javancss.dir" location="${report.dir}/javancss" />
 
   <!-- ソースファイルをコンパイル -->
   <target name="compile">
@@ -100,6 +102,20 @@
         <include name="**/*.java" />
       </fileset>
     </cobertura-report>
+  </target>
+
+  <!-- ステップ数の計測 -->
+  <taskdef name="javancss" classname="javancss.JavancssAntTask">
+  <classpath>
+    <fileset dir="${lib.javancss.dir}" includes="*.jar" />
+  </classpath>
+  </taskdef>
+  <target name="count">
+    <mkdir dir="${report.javancss.dir}" />
+    <javancss srcdir="${productSource}"
+      generateReport="true"
+      outputfile="${report.javancss.dir}/javancss_metrics.xml"
+      format="xml" />
   </target>
 
   <!-- Jarファイルを作成する -->
