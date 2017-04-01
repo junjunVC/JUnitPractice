@@ -36,4 +36,10 @@ public class FizzBuzzTest {
 		assertThat(actual.get(15),is("16"));
 	}
 
+	@Test
+	public void createFizzBuzzをカスタムMathcerを使用してテストする() {
+		List<String> actual = FizzBuzz.createFizzBuzzList(6);
+		assertThat(actual, is(Lists.list("1","2","Fizz","4","Buzz","Fizz")));
+	}
+
 }
