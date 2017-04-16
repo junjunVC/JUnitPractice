@@ -8,7 +8,6 @@ import java.util.List;
 
 import junit.practice.FizzBuzz;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class FizzBuzzTest {
