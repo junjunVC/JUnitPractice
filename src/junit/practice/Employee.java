@@ -1,0 +1,71 @@
+package junit.practice;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Employee {
+	private String firstName;
+	private String lastName;
+	private String email;
+
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public static List<Employee> load(InputStream input) {
+		LinkedList<Employee> list = new LinkedList<Employee>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(input));
+			for(;;) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				String[] values = line.split(",");
+				Employee employee = new Employee();
+				employee.setFirstName(values[0]);
+				employee.setLastName(values[1]);
+				employee.setEmail(values[2]);
+				list.add(employee);
+			}
+			return list;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+
+				}
+			}
+		}
+
+	}
+
+}
