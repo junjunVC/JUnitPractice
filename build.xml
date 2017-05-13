@@ -27,6 +27,9 @@
   <property name="report.javancss.dir" location="${report.dir}/javancss" />
 
   <!-- ソースファイルをコンパイル -->
+  <path id="mockito.lib">
+    <fileset dir="${lib.mockito.dir}" includes="*.jar" />
+  </path>
   <target name="compile">
     <mkdir dir="${productCompile}" />
     <javac
@@ -34,20 +37,17 @@
       srcdir="${productSource}"
       destdir="${productCompile}"
       includeAntRuntime="true"
-      debug="true"
-    />
+      debug="true" />
 
     <!-- テストコードをコンパイル -->
     <mkdir dir="${testCompile}" />
     <javac
+      classpathref="mockito.lib"
       encoding="utf-8"
       srcdir="${testSource}"
       destdir="${testCompile}"
       includeAntRuntime="true">
-        <classpath>
-          <fileset dir="${lib.mockito.dir}" includes="*.jar" />
-        </classpath>
-        <classpath>
+      <classpath>
         <pathelement location="${productCompile}"/>
         <fileset dir="${lib.junit.dir}">
           <include name="*.jar"/>
