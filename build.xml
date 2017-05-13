@@ -18,6 +18,7 @@
   <property name="lib.junit.dir" location="./lib/junit" />
   <property name="lib.cobertura.dir" location="./lib/cobertura" />
   <property name="lib.javancss.dir" location="./lib/javancss" />
+  <property name="lib.mockito.dir" location="./lib/mockito" />
 
   <!-- レポート用パスの設定 -->
   <property name="report.dir" location="./bin/report" />
@@ -43,7 +44,10 @@
       srcdir="${testSource}"
       destdir="${testCompile}"
       includeAntRuntime="true">
-      <classpath>
+        <classpath>
+          <fileset dir="${lib.mockito.dir}" includes="*.jar" />
+        </classpath>
+        <classpath>
         <pathelement location="${productCompile}"/>
         <fileset dir="${lib.junit.dir}">
           <include name="*.jar"/>
