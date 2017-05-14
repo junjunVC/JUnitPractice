@@ -87,6 +87,7 @@
         <fileset dir="${lib.junit.dir}">
           <include name="*.jar" />
         </fileset>
+        <path refid="mockito.lib" />
         <path refid="cobertura.lib" />
       </classpath>
       <formatter type="xml" />
