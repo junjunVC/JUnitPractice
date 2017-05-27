@@ -19,6 +19,7 @@
   <property name="lib.cobertura.dir" location="./lib/cobertura" />
   <property name="lib.javancss.dir" location="./lib/javancss" />
   <property name="lib.mockito.dir" location="./lib/mockito" />
+  <property name="lib.servlet.dir" location="./lib/servlet" />
 
   <!-- レポート用パスの設定 -->
   <property name="report.dir" location="./bin/report" />
@@ -27,12 +28,17 @@
   <property name="report.javancss.dir" location="${report.dir}/javancss" />
 
   <!-- ソースファイルをコンパイル -->
-  <path id="mockito.lib">
+  <path id="build.lib">
     <fileset dir="${lib.mockito.dir}" includes="*.jar" />
+    <fileset dir="${lib.servlet.dir}" includes="*.jar" />
+  </path>
+  <path id="servlet.lib">
+    <fileset dir="${lib.servlet.dir}" includes="*.jar" />
   </path>
   <target name="compile">
     <mkdir dir="${productCompile}" />
     <javac
+      classpathref="servlet.lib"
       encoding="utf-8"
       srcdir="${productSource}"
       destdir="${productCompile}"
@@ -42,7 +48,7 @@
     <!-- テストコードをコンパイル -->
     <mkdir dir="${testCompile}" />
     <javac
-      classpathref="mockito.lib"
+      classpathref="build.lib"
       encoding="utf-8"
       srcdir="${testSource}"
       destdir="${testCompile}"
@@ -87,7 +93,7 @@
         <fileset dir="${lib.junit.dir}">
           <include name="*.jar" />
         </fileset>
-        <path refid="mockito.lib" />
+        <path refid="build.lib" />
         <path refid="cobertura.lib" />
       </classpath>
       <formatter type="xml" />
